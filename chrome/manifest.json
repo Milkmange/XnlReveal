@@ -49,6 +49,7 @@
         {
             "resources": [
                 "xnl.css",
+                "fonts/*",
                 "images/codemain.jpg",
                 "images/icon16.png",
                 "images/icon48.png",

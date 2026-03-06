@@ -1,5 +1,11 @@
 ## Changelog
 
+- v4.3
+
+  - New
+
+    - Add fonts to the extension to display as originally intended.
+
 - v4.2
 
   - New
