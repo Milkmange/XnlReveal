@@ -1,5 +1,11 @@
 ## Changelog
 
+- v4.4
+
+  - New
+
+    - Added a `Copy All URLs` button to the DevTools panel. This extracts all unique URLs from the currently visible messages (respecting any active filter) and copies them to the clipboard, one per line. The button shows the count of URLs copied on success.
+
 - v4.3
 
   - New

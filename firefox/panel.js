@@ -5,6 +5,7 @@ const STORAGE_POLL_INTERVAL_MS = 500; // How often to check storage for new mess
 const messagesDiv = document.getElementById("messages");
 const clearBtn = document.getElementById("clearBtn");
 const copyAllBtn = document.getElementById("copyAllBtn");
+const copyAllUrlsBtn = document.getElementById("copyAllUrlsBtn");
 const searchInput = document.getElementById("searchInput");
 
 console.log("Panel.js loaded");
@@ -279,6 +280,68 @@ copyAllBtn.addEventListener("click", function() {
     copyAllBtn.textContent = 'Copy Failed';
     setTimeout(() => {
       copyAllBtn.textContent = 'Copy All Messages';
+    }, 1000);
+  } finally {
+    document.body.removeChild(textarea);
+  }
+});
+
+// Copy all URLs button handler - extracts unique URLs from visible messages
+copyAllUrlsBtn.addEventListener("click", function() {
+  // URL regex pattern to match http/https URLs
+  const urlRegex = /https?:\/\/[^\s'"<>\]\)]+/g;
+  const uniqueUrls = new Set();
+  
+  // Get all visible message elements (respects current filter)
+  const messages = messagesDiv.querySelectorAll(".message");
+  messages.forEach(message => {
+    if (message.style.display === "none") {
+      return; // Skip filtered-out messages
+    }
+    const text = message.textContent;
+    const matches = text.match(urlRegex);
+    if (matches) {
+      matches.forEach(url => uniqueUrls.add(url));
+    }
+  });
+  
+  if (uniqueUrls.size === 0) {
+    const originalText = copyAllUrlsBtn.textContent;
+    copyAllUrlsBtn.textContent = 'No URLs found';
+    setTimeout(() => {
+      copyAllUrlsBtn.textContent = originalText;
+    }, 1000);
+    return;
+  }
+  
+  // Join with newline, add trailing newline only if multiple URLs
+  const urlArray = Array.from(uniqueUrls);
+  const textToCopy = urlArray.length === 1 ? urlArray[0] : urlArray.join('\n') + '\n';
+  
+  // Copy to clipboard using execCommand (works in devtools panels)
+  const textarea = document.createElement('textarea');
+  textarea.value = textToCopy;
+  textarea.style.position = 'fixed';
+  textarea.style.opacity = '0';
+  document.body.appendChild(textarea);
+  textarea.select();
+  
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+      const originalText = copyAllUrlsBtn.textContent;
+      copyAllUrlsBtn.textContent = `Copied ${uniqueUrls.size} URLs!`;
+      setTimeout(() => {
+        copyAllUrlsBtn.textContent = originalText;
+      }, 1000);
+    } else {
+      throw new Error('Copy command failed');
+    }
+  } catch (err) {
+    console.error('Failed to copy URLs:', err);
+    copyAllUrlsBtn.textContent = 'Copy Failed';
+    setTimeout(() => {
+      copyAllUrlsBtn.textContent = 'Copy All URLs';
     }, 1000);
   } finally {
     document.body.removeChild(textarea);

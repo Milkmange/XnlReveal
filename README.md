@@ -1,6 +1,6 @@
 <center><img src="https://github.com/xnl-h4ck3r/XnlReveal/blob/main/images/title.png"></center>
 
-## About - v4.3
+## About - v4.4
 
 This is a **Chrome/Firefox Extension** that can do the following:
 
@@ -127,6 +127,7 @@ Messages about parameter reflections and wayback endpoints were previously writt
 
 - `Filter messages...` - Enter any text to do real-time filtering of messages, making it easier to find specific reflections or Wayback results among the stored messages.
 - `Copy All Messages` - Copy all messages to the clipboard so you can paste into your notes!
+- `Copy All URLs` - Extract all unique URLs from the currently visible messages (respecting any active filter) and copy them to the clipboard, one per line. This is useful for quickly gathering all URLs from reflections and Wayback results for further testing.
 - `Clear Messages and Cache` - Clear all the messages from the tab and local storage. It will also clear what wayback endpoints have been searched for previously.
 
 <center><img src="https://github.com/xnl-h4ck3r/XnlReveal/blob/main/images/tab.png"></center>
