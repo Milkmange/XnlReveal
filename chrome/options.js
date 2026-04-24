@@ -7,6 +7,7 @@ const copyToClipboardInput = document.getElementById("copyToClipboardInput");
 const paramBlacklistInput = document.getElementById("paramBlacklistInput");
 const checkDelayInput = document.getElementById("checkDelayInput");
 const waybackRegexInput = document.getElementById("waybackRegexInput");
+const knoxssApiKeyInput = document.getElementById("knoxssApiKeyInput");
 const saveCanaryTokenButton = document.getElementById("saveButton");
 const clearStorageButton = document.getElementById("clearStorageButton");
 const clearStorageMessage = document.getElementById("clearStorageMessage");
@@ -54,6 +55,9 @@ chrome.storage.sync.get(["checkDelay"], (result) => {
 });
 chrome.storage.sync.get(["waybackRegex"], (result) => {
   waybackRegexInput.value = result.waybackRegex || "";
+});
+chrome.storage.sync.get(["knoxssApiKey"], (result) => {
+  knoxssApiKeyInput.value = result.knoxssApiKey || "";
 });
 chrome.storage.sync.get(["scopeItems"], (result) => {
   const savedScope = result.scopeItems || [];
@@ -139,6 +143,7 @@ saveButton.addEventListener("click", (e) => {
   let paramBlacklist = paramBlacklistInput.value;
   const checkDelay = checkDelayInput.value;
   let waybackRegex = waybackRegexInput.value;
+  let knoxssApiKey = knoxssApiKeyInput.value;
 
   // Check if canaryToken is blank and reset it to "xnlreveal"
   if (!canaryToken) {
@@ -166,6 +171,7 @@ saveButton.addEventListener("click", (e) => {
   chrome.storage.sync.set({ paramBlacklist });
   chrome.storage.sync.set({ checkDelay });
   chrome.storage.sync.set({ waybackRegex });
+  chrome.storage.sync.set({ knoxssApiKey });
   if (scopeTypeWhiteRadio.checked) {
     chrome.storage.sync.set({ scopeType: "whitelist" });
   } else {

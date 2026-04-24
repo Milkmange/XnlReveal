@@ -360,6 +360,102 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
     return false; // Don't expect async response
   }
+
+  // Send URL with reflections to KNOXSS API
+  if (request.action === "sendToKnoxss") {
+    const { targetUrl, apiKey, authHeaders } = request;
+    
+    // Encode & as %26 in the target URL
+    const encodedTarget = targetUrl.replace(/&/g, "%26");
+    
+    // Build POST body using URLSearchParams (auto-sets Content-Type)
+    const params = new URLSearchParams();
+    params.append("target", encodedTarget);
+    if (authHeaders) {
+      params.append("auth", authHeaders);
+    }
+
+    console.log("%c🤘Xnl Reveal%c Background: Sending to KNOXSS API:", "color: #00ff00; font-weight: bold", "color: inherit", encodedTarget);
+
+    fetch("https://api.knoxss.pro", {
+      method: "POST",
+      headers: {
+        "X-API-KEY": apiKey,
+      },
+      body: params,
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        console.log("%c🤘Xnl Reveal%c Background: KNOXSS API response:", "color: #00ff00; font-weight: bold", "color: inherit", data);
+        
+        const tabId = sender.tab ? sender.tab.id : null;
+        const timestamp = Date.now();
+        let message = null;
+        let msgType = "info";
+        
+        try {
+          const json = JSON.parse(data);
+          
+          if (json.Error && json.Error !== "none") {
+            message = `Xnl Reveal: ❌ KNOXSS error for ${targetUrl}\n${json.Error}`;
+            msgType = "error";
+          } else if (json.XSS === "true" && json.PoC) {
+            message = `Xnl Reveal: ✅ KNOXSS found XSS for ${targetUrl}\nPoC: ${json.PoC}`;
+          } else if (json.Redir === "true" && json.PoC) {
+            message = `Xnl Reveal: ✅ KNOXSS found Open Redirect for ${targetUrl}\nPoC: ${json.PoC}`;
+          }
+        } catch (e) {
+          // Response is not JSON, log raw
+          message = `Xnl Reveal: ❌ KNOXSS unexpected response for ${targetUrl}\n${data}`;
+          msgType = "error";
+        }
+        
+        if (message) {
+          if (tabId) {
+            sendToDevtools(tabId, msgType, message, timestamp);
+          }
+          
+          chrome.storage.local.get(['xnlreveal_all_messages'], (result) => {
+            const messages = result['xnlreveal_all_messages'] || [];
+            messages.push({ 
+              type: msgType, 
+              text: message, 
+              timestamp: timestamp 
+            });
+            if (messages.length > MAX_STORED_MESSAGES) {
+              messages.shift();
+            }
+            chrome.storage.local.set({ 'xnlreveal_all_messages': messages });
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("%c🤘Xnl Reveal%c Background: KNOXSS API error:", "color: #00ff00; font-weight: bold", "color: inherit", error);
+        
+        const tabId = sender.tab ? sender.tab.id : null;
+        const timestamp = Date.now();
+        const message = `Xnl Reveal: KNOXSS API error for ${targetUrl}\n${error.message}`;
+        
+        if (tabId) {
+          sendToDevtools(tabId, "error", message, timestamp);
+        }
+        
+        chrome.storage.local.get(['xnlreveal_all_messages'], (result) => {
+          const messages = result['xnlreveal_all_messages'] || [];
+          messages.push({ 
+            type: "error", 
+            text: message, 
+            timestamp: timestamp 
+          });
+          if (messages.length > MAX_STORED_MESSAGES) {
+            messages.shift();
+          }
+          chrome.storage.local.set({ 'xnlreveal_all_messages': messages });
+        });
+      });
+    
+    return false; // Async but we don't send a response back
+  }
 });
 
 // Handle devtools panel connections

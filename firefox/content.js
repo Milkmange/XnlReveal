@@ -721,6 +721,7 @@ browser.storage.sync.get(
     "paramBlacklist",
     "checkDelay",
     "waybackRegex",
+    "knoxssApiKey",
     "extensionDisabled",
     "reflectionsDisabled",
     "waybackDisabled",
@@ -799,6 +800,11 @@ browser.storage.sync.get(
       waybackRegex = "";
     } else {
       waybackRegex = result.waybackRegex || "";
+    }
+    if (result.knoxssApiKey === undefined) {
+      knoxssApiKey = "";
+    } else {
+      knoxssApiKey = result.knoxssApiKey || "";
     }
 
     function writeWaybackEndpoints() {
@@ -1186,6 +1192,7 @@ browser.storage.sync.get(
                                     reflectedParameters,
                                     charsetXSS
                                   );
+                                  sendToKnoxss(window.location.href);
                                 }
                                 statusBar.remove();
                               }
@@ -1285,6 +1292,23 @@ browser.storage.sync.get(
       }
 
       return reflectionConsoleMsg;
+    }
+
+    // Function to send URL with reflections to KNOXSS API
+    function sendToKnoxss(url) {
+      if (!knoxssApiKey) return;
+
+      // Get cookies to pass as auth headers
+      const cookies = document.cookie;
+      const authHeaders = cookies ? "Cookie:" + cookies : "";
+
+      // Send to background script to avoid CORS issues
+      browser.runtime.sendMessage({
+        action: "sendToKnoxss",
+        targetUrl: url,
+        apiKey: knoxssApiKey,
+        authHeaders: authHeaders,
+      });
     }
 
     // Use the window.onload event to trigger your code after the page has loaded.
@@ -1490,6 +1514,7 @@ browser.storage.sync.get(
                                       reflectedParameters,
                                       charsetXSS
                                     );
+                                    sendToKnoxss(window.location.href);
                                   }
                                   statusBar.remove();
                                 }

@@ -1,5 +1,12 @@
 ## Changelog
 
+- v4.5
+
+  - New
+
+    - Added a `KNOXSS API Key` field to the Options page. If a KNOXSS API key is saved and `Show query parameter reflections` is enabled, then when a reflection is found the URL is automatically sent to the KNOXSS API asynchronously. Only a basic unauthed GET check for XSS is made (so no auth headers or cookies sent). The KNOXSS API response is written to the XnlReveal DevTools tab.
+    - Added Host permissions to the manifest file for KNOXSS API URL.
+    
 - v4.4
 
   - New

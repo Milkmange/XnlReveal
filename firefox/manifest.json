@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Xnl Reveal",
   "description": "Show alerts for reflected query params; Show Wayback endpoints; Show hidden elements; Enable disabled elements. See https://github.com/xnl-h4ck3r/XnlReveal for more details.",
-  "version": "4.2",
+  "version": "4.5",
   "background": {
     "scripts": [
       "background.js"
@@ -15,6 +15,7 @@
     "contextMenus",
     "webNavigation",
     "<all_urls>",
+    "https://api.knoxss.pro/*",
     "clipboardWrite",
     "alarms"
   ],

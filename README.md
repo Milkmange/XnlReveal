@@ -1,6 +1,6 @@
 <center><img src="https://github.com/xnl-h4ck3r/XnlReveal/blob/main/images/title.png"></center>
 
-## About - v4.4
+## About - v4.5
 
 This is a **Chrome/Firefox Extension** that can do the following:
 
@@ -80,6 +80,7 @@ You have the following options:
 - `Param blacklist` - This is a comma separated list of parameter names (e.g. `param1,param2`) that you do not want to replace with the canary token to check if it reflects. This can be used when testing certain parameters causes problems, e.g. logging you out.
 - `Check delay` - When a page is loaded, depending on settings, the extension will try to show hidden elements and enable disabled elements. However, sometimes parts of the page are loaded dynamically and they aren't in the original response. THe extension will try to show and enable again after this delay (in seconds) after the page has initially loaded.
 - `Wayback RegEx` - If the setting to write Wayback archive endpoints has been selected, then only wayback endpoints that match the entered RegEx will be displayed in the DevTools tab. If the field is left blank, then upto 1000 Wayback endpoints are returned. **IMPORTANT: Any RegEx entered will be treated as case insensitive**
+- `KNOXSS API Key` - Enter your [KNOXSS](https://knoxss.me/) API key. If a key is saved and `Show query parameter reflections` is enabled on the Popup menu, then when a reflection is found the URL is automatically sent to the KNOXSS API. The `X-API-KEY` header is set with the saved key, and cookies from the current page are passed as auth headers. The KNOXSS API response is written to the `Xnl Reveal` DevTools tab. The API call is made asynchronously so it does not block page interaction.
 - `Extension Scope` options:
   - `Whitelist` or `Blacklist` - This determines which sites will results in parameter reflection checks and/or wayback endpoint retrieval. Depending on which option is chosen, a host either must contain or not contain the entered word to be processed.
   - `Host match word to add` - Enter a word that exists in the host name (or a full hostname) that you want to either whitelist or blacklist, and click the **Add** button to add to the scope list. For example, if you only want to run on Redbull pages, just add `redbull` and set as a whitelist.
